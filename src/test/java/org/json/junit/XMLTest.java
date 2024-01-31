@@ -1425,7 +1425,7 @@ public class XMLTest {
             Object result = org.json.XML.toJSONObject(new StringReader(xmlString1), new org.json.JSONPointer("/Root/Person/Hobbies/Hobby/1"));
             if (result instanceof org.json.JSONObject) {
                 org.json.JSONObject jobj = (org.json.JSONObject) result;
-                System.out.println(jobj);
+                System.out.println("Test1 for Task1:" + jobj);
             } else {
                 // 如果返回的不是 JSONObject，则直接打印结果
                 System.out.println("Test1 for Task1:" + result);
@@ -1464,7 +1464,7 @@ public class XMLTest {
             Object result = org.json.XML.toJSONObject(new StringReader(xmlString2), new org.json.JSONPointer("/contact/address/street/"));
             if (result instanceof org.json.JSONObject) {
                 org.json.JSONObject jobj = (org.json.JSONObject) result;
-                System.out.println(jobj);
+                System.out.println("Test2 for Task1:" + jobj);
             } else {
                 // 如果返回的不是 JSONObject，则直接打印结果
                 System.out.println("Test2 for Task1:" + result);
