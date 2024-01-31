@@ -1417,7 +1417,6 @@ public class XMLTest {
                 "            </Hobby>\n" +
                 "            <Hobby>\n" +
                 "                <Type1>Traveling</Type1>\n" +
-                "                Traveling\n" + //data error?
                 "            </Hobby>\n" +
                 "        </Hobbies>\n" +
                 "    </Person>\n" +
@@ -1443,8 +1442,6 @@ public class XMLTest {
             System.out.println("Test1 for Task2:" + jobj);
         } catch (org.json.JSONException e) {
             System.out.println("JSON Exception: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("IO Exception: " + e.getMessage());
         }
 
 
@@ -1485,8 +1482,6 @@ public class XMLTest {
             System.out.println("Test2 for Task2:" + jobj);
         } catch (org.json.JSONException e) {
             System.out.println("JSON Exception: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("IO Exception: " + e.getMessage());
         }
     }
 }

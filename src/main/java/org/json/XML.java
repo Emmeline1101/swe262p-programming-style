@@ -65,33 +65,6 @@ public class XML {
     static int index = -1;
     static int stop_key = 0;
 
-
-    public static Object stringToValue(String string, XMLXsiTypeConverter<?> typeConverter) {
-        if(typeConverter != null) {
-            return typeConverter.convert(string);
-        }
-        return stringToValue(string);
-    }
-    @Override
-    public static Object stringToValue(String string) {
-        if ("".equals(string)) {
-            return string;
-        }
-
-        // check JSON key words true/false/null
-        if ("true".equalsIgnoreCase(string)) {
-            return Boolean.TRUE;
-        }
-        if ("false".equalsIgnoreCase(string)) {
-            return Boolean.FALSE;
-        }
-        if ("null".equalsIgnoreCase(string)) {
-            return JSONObject.NULL;
-        }
-        return string;
-    }
-
-
     /**
      * Creates an iterator for navigating Code Points in a string instead of
      * characters. Once Java7 support is dropped, this can be replaced with
@@ -285,28 +258,9 @@ public class XML {
         XMLXsiTypeConverter<?> xmlXsiTypeConverter;
 
 
-        // Test for and skip past these forms:
-        // <!-- ... -->
-        // <! ... >
-        // <![ ... ]]>
-        // <? ... ?>
-        // Report errors for these forms:
-        // <>
-        // <=
-        // <<
-//        if (keyfind) {
-//            if (arrayindex < 0) {
-//                return false;
-//            }
-//        }
+
         token = x.nextToken();
-//        if (keypass){
-//            x.skipPast(">");
-//            keypass=false;
-//        }
 
-
-        // <!
 
         if (token == BANG) {
             c = x.next();
@@ -351,6 +305,15 @@ public class XML {
             // Close tag </
 
             token = x.nextToken();
+            if (token instanceof String && (!Arrays.asList(keys).contains(token)) ){
+
+                if(stop_key>=0){
+                    x.skipPast("\n");
+                    return false;
+                }
+
+            }
+
             if (name == null) {
                 throw x.syntaxError("Mismatched close tag " + token);
             }
@@ -365,10 +328,7 @@ public class XML {
                 arrayindex--;
 
             }
-//            if (token instanceof String && (!Arrays.asList(keys).contains(token)) ){
-//                token = x.nextContent();
-//                return false;
-//            }
+
 
             return true;
 
@@ -380,24 +340,21 @@ public class XML {
         } else {
             if (stopKey.equals(token)) {  //在 close tag里判断有没有找到对应的key
 //                keyfind = true;
-                index--;
+//                index--;
                 stop_key--;
 //
             }
 //            for (String key :keys){
             if (token instanceof String && (!Arrays.asList(keys).contains(token)) ){
-                keypass=true;
-                if(index>=0){
+
+                if(stop_key>=0){
+                    keypass=true;
                     return false;
                 }
 
             }
 
-//            }
-            if(index==-1){
-                context.clear();
-                index--;
-            }
+
             tagName = (String) token;
             token = null;
             jsonObject = new JSONObject();
@@ -485,24 +442,26 @@ public class XML {
 //                        return false;
 //                    }
 //                }
-                        if (keypass && index>=0){
-                            x.skipPast("\n");
+                        if (keypass && stop_key>=0){
+//                            x.nextContent();
 
+//                            x.skipPast('/'+(x.nextContent().toString())+">");
+                            x.skipPast("\n");
                             keypass=false;
                         }
                         token = x.nextContent();
                         //证明我一个深层遍历结束了
-                        if (keyfind) {
-
-                            if (arrayindex < 0) {
-                                context.clear();
-                                for (String key : jsonObject.keySet()) {
-                                    Object value = jsonObject.get(key);
-                                    context.put(key, value);
-                                }
-                                return false;
-                            }
-                        }
+//                        if (keyfind) {
+//
+//                            if (arrayindex < 0) {
+//                                context.clear();
+//                                for (String key : jsonObject.keySet()) {
+//                                    Object value = jsonObject.get(key);
+//                                    context.put(key, value);
+//                                }
+//                                return false;
+//                            }
+//                        }
 
                         if (token == null) {
                             if (tagName != null) {
@@ -528,30 +487,7 @@ public class XML {
                             }
 
                             if (parseSub(x, jsonObject, tagName, config, currentNestingDepth + 1,stopKey,keys)) {
-//                                if (!keyfind ||keyfind&&arrayindex>=0 ) {
-//                                    context.clear();
-//                                }
-                                if (keyfind ) { //如果找到key
-//                                    if(index==-1){
-//                                    context.clear();
-//                                    index--;
-//                                    }
-                                    if (arrayindex < 0) { //如果arrayindex也对了
-                                        if (jsonObject.length() == 0) {
-                                            context.accumulate(stopKey, "");
-                                        } else if (jsonObject.length() == 1
-                                                && jsonObject.opt(config.getcDataTagName()) != null) {
-                                            context.accumulate(stopKey, jsonObject.opt(config.getcDataTagName()));
-                                        } else {
-                                            context.accumulate(stopKey, jsonObject);
-
-                                        }
-//                                    x.skipPast(">");
-                                        return false;
-                                    }
-                                }
                                 if (config.getForceList().contains(tagName)) {
-
                                     // Force the value to be an array
                                     if (jsonObject.length() == 0) {
                                         context.put(tagName, new JSONArray());
@@ -582,6 +518,7 @@ public class XML {
             }
         }
     }
+
 
     private static boolean parseSub(XMLTokener x, JSONObject context, String name, XMLParserConfiguration config, int currentNestingDepth, String replacekey, JSONObject replacement)
             throws JSONException {
@@ -1170,19 +1107,11 @@ public class XML {
         String stopKey = keys[keys.length - 1];
 
         if (keys[keys.length - 1].matches("^[0-9]")) {
-            arrayindex = Integer.parseInt(keys[keys.length - 1]);//为了应对jsonarray的情况
-            index = Integer.parseInt(keys[keys.length - 1]);
             stopKey = keys[keys.length - 2];
         }
-        for(int i=0;i<keys.length-2;i++){
-            if(keys[i].matches("^[0-9]") ) {
-                arrayindex = Integer.parseInt(keys[i]);
-                index = Integer.parseInt(keys[keys.length - 1]);
-            }
-        }
+
         while (x.more()) {
             x.skipPast("<");
-//            if(x.more() && !keyfind && arrayindex>=-1) {
             if(x.more() && !keyfind ) {
                 parseSub(x, jo, null, XMLParserConfiguration.ORIGINAL, 0,stopKey, keys);
             }
@@ -1191,7 +1120,8 @@ public class XML {
         keyfind = false;
         arrayindex = -1;
         index=-1;
-        return jo;
+        JSONObject result = (JSONObject) path.queryFrom(jo);
+        return result;
     }
 
     // M2Task2
@@ -1213,7 +1143,6 @@ public class XML {
         keyfind=false;
         while (x.more()) {
             x.skipPast("<");
-//            if(x.more() && !keyfind && arrayindex>=-1) {
             if(x.more() && !keyfind ) {
                 parseSub(x, jo, null, XMLParserConfiguration.ORIGINAL, 0,replacekey,replacement);
             }
