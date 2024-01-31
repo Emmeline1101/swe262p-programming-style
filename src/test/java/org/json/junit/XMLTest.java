@@ -1397,6 +1397,98 @@ public class XMLTest {
         Util.compareActualVsExpectedJsonObjects(actualJson,expectedJson);
     }
 
+    @Test
+    public void M2Test1() { //for m1Task2 m2Task1
+        final String xmlString1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<Root>\n" +
+                "    <Person>\n" +
+                "        <Name>John Doe</Name>\n" +
+                "        <Age>30</Age>\n" +
+                "        <Address>\n" +
+                "            <City>New York</City>\n" +
+                "            <State>NY</State>\n" +
+                "        </Address>\n" +
+                "        <Hobbies>\n" +
+                "            <Hobby>\n" +
+                "                <Type>\n" +
+                "                    <City>New York</City>\n" +
+                "                    <State>NY</State>\n" +
+                "                </Type>\n" +
+                "            </Hobby>\n" +
+                "            <Hobby>\n" +
+                "                <Type1>Traveling</Type1>\n" +
+                "                Traveling\n" + //data error?
+                "            </Hobby>\n" +
+                "        </Hobbies>\n" +
+                "    </Person>\n" +
+                "</Root>";
+        try {
+            Object result = org.json.XML.toJSONObject(new StringReader(xmlString1), new org.json.JSONPointer("/Root/Person/Hobbies/Hobby/1"));
+            if (result instanceof org.json.JSONObject) {
+                org.json.JSONObject jobj = (org.json.JSONObject) result;
+                System.out.println(jobj);
+            } else {
+                // 如果返回的不是 JSONObject，则直接打印结果
+                System.out.println("Test1 for Task1:" + result);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        //Task2
+        try {
+            org.json.JSONObject replacement = org.json.XML.toJSONObject("<City>Boston</City>\n");
+            System.out.println("Given replacement: " + replacement);
+            org.json.JSONObject jobj = org.json.XML.toJSONObject(new StringReader(xmlString1), new org.json.JSONPointer("/Root/Person/Hobbies/Hobby/1"), replacement);
+            System.out.println("Test1 for Task2:" + jobj);
+        } catch (org.json.JSONException e) {
+            System.out.println("JSON Exception: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO Exception: " + e.getMessage());
+        }
+
+
+        System.out.println("-----------------------");
+    }
+
+    @Test
+    public void M2Test2() {
+        String xmlString2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<contact>\n" +
+                "  <nick>Crista </nick>\n" +
+                "  <name>Crista Lopes</name>\n" +
+                "  <address>\n" +
+                "    <street>Ave of Nowhere</street>\n" +
+                "    <zipcode>92614</zipcode>\n" +
+                "  </address>\n" +
+                "</contact>";
+
+        try {
+            Object result = org.json.XML.toJSONObject(new StringReader(xmlString2), new org.json.JSONPointer("/contact/address/street/"));
+            if (result instanceof org.json.JSONObject) {
+                org.json.JSONObject jobj = (org.json.JSONObject) result;
+                System.out.println(jobj);
+            } else {
+                // 如果返回的不是 JSONObject，则直接打印结果
+                System.out.println("Test2 for Task1:" + result);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+//Task2
+
+        try {
+            org.json.JSONObject replacement = org.json.XML.toJSONObject("<street>Ave of the Arts</street>\n");
+            System.out.println("Given replacement: " + replacement);
+            org.json.JSONObject jobj = org.json.XML.toJSONObject(new StringReader(xmlString2), new org.json.JSONPointer("/contact/address/street/"), replacement);
+            System.out.println("Test2 for Task2:" + jobj);
+        } catch (org.json.JSONException e) {
+            System.out.println("JSON Exception: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO Exception: " + e.getMessage());
+        }
+    }
 }
 
 
