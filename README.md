@@ -6,7 +6,7 @@
 
 3. Clone the project to your local machine
 4. run "mvn test"
-
+=============================================================================================
 
 ![Json-Java logo](https://github.com/stleary/JSON-java/blob/master/images/JsonJava.png?raw=true)
 
