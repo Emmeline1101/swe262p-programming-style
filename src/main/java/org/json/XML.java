@@ -18,7 +18,6 @@ import java.util.Map;
 import static org.json.NumberConversionUtil.potentialNumber;
 import static org.json.NumberConversionUtil.stringToNumber;
 
-
 /**
  * This provides static methods to convert an XML text into a JSONObject, and to
  * covert a JSONObject into an XML text.
