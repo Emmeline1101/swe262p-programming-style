@@ -1,3 +1,13 @@
+# SWE262P Programming Style Course
+## Running Environment
+1. Install Java Development Kit (JDK).
+
+2. Install Apache Maven: Download and install Maven from the official website.
+
+3. Clone the project to your local machine
+4. run "mvn test"
+=============================================================================================
+
 ![Json-Java logo](https://github.com/stleary/JSON-java/blob/master/images/JsonJava.png?raw=true)
 
 <sub><sup>image credit: Ismael Pérez Ortiz</sup></sub>
