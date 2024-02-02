@@ -10,10 +10,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static org.json.NumberConversionUtil.potentialNumber;
 import static org.json.NumberConversionUtil.stringToNumber;
@@ -696,10 +693,74 @@ public class XML {
 
         index=-1;
         stop_key = 0;
-        JSONObject result = (JSONObject) path.queryFrom(jo);
-        return result;
-    }
+        JSONObject originalresult = null;
 
+
+//       String result1= jo.optString("contact/address");
+//       JSONObject result = null;
+//       result.put(keys[keys.length-1],result1);
+        if(keys[keys.length-1].matches("^[0-9]"))
+        {
+            return originalresult = (JSONObject) path.queryFrom(jo);
+        }
+        else {
+            String[] pathElements = (path.toString().split("/"));
+            int lastElementIndex = pathElements.length - 1;
+            pathElements[lastElementIndex] = null;
+
+            // 构建新的 JSON Pointer
+            StringBuilder newPath = new StringBuilder();
+            for (String element : pathElements) {
+                if (element != null && !element.isEmpty()) {
+                    newPath.append("/").append(element);
+                }
+            }
+            JSONPointer newpath = new JSONPointer(newPath.toString());
+
+            JSONObject result = (JSONObject) newpath.queryFrom(jo);
+//        for (String key : result.keySet()) {
+//            if (!Arrays.asList(keys).contains(key)) {
+//                result.remove(key);
+//            }
+//        }
+            Iterator<String> iterator = result.keys();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                if (!Arrays.asList(keys).contains(key)) {
+                    iterator.remove();
+                }
+            }
+            return result;
+        }
+    }
+    public static JSONObject toJSONObject(Reader reader, JSONPointer path,JSONObject replacement) {
+        JSONObject jo = new JSONObject();
+        XMLTokener x = new XMLTokener(reader);
+        String[] keys = (path.toString().split("/"));
+
+        String replacekey = keys[keys.length - 1];
+        if (keys[keys.length - 1].matches("^[0-9]")) {
+            arrayindex = Integer.parseInt(keys[keys.length - 1]);
+            replacekey = keys[keys.length - 2];
+        }
+        for(int i=0;i<keys.length-2;i++){
+            if(keys[i].matches("^[0-9]") ) {
+                arrayindex = Integer.parseInt(keys[i]);
+            }
+        }
+        keyfind=false;
+        arrayindex=-1;
+        keyAlreadyFind=false;
+        while (x.more()) {
+            x.skipPast("<");
+            if(x.more() && !keyfind ) {
+                parseSub(x, jo, null, XMLParserConfiguration.ORIGINAL, 0,replacekey,replacement);
+            }
+        }
+
+
+        return jo;
+    }
     private static boolean parseSub(XMLTokener x, JSONObject context, String name, XMLParserConfiguration config, int currentNestingDepth, String stopKey,String[] keys)
             throws JSONException {
         char c;
@@ -931,38 +992,6 @@ public class XML {
             }
         }
     }
-
-
-
-
-    /**
-     * Milestone 2 task2*/
-    public static JSONObject toJSONObject(Reader reader, JSONPointer path,JSONObject replacement) {
-        JSONObject jo = new JSONObject();
-        XMLTokener x = new XMLTokener(reader);
-        String[] keys = (path.toString().split("/"));
-
-        String replacekey = keys[keys.length - 1];
-        if (keys[keys.length - 1].matches("^[0-9]")) {
-            arrayindex = Integer.parseInt(keys[keys.length - 1]);
-            replacekey = keys[keys.length - 2];
-        }
-        for(int i=0;i<keys.length-2;i++){
-            if(keys[i].matches("^[0-9]") ) {
-                arrayindex = Integer.parseInt(keys[i]);
-            }
-        }
-        keyfind=false;
-        while (x.more()) {
-            x.skipPast("<");
-            if(x.more() && !keyfind ) {
-                parseSub(x, jo, null, XMLParserConfiguration.ORIGINAL, 0,replacekey,replacement);
-            }
-        }
-
-
-        return jo;
-    }
     private static boolean parseSub(XMLTokener x, JSONObject context, String name, XMLParserConfiguration config, int currentNestingDepth, String replacekey, JSONObject replacement)
             throws JSONException {
         char c;
@@ -1190,11 +1219,9 @@ public class XML {
                 }
             }
         }
+
+
     }
-
-
-
-
 
 
     /**
