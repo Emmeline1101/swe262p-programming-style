@@ -1485,6 +1485,92 @@ public class XMLTest {
             System.out.println("JSON Exception: " + e.getMessage());
         }
     }
+
+    @Test
+    public void M2Test3() {
+        String xmlString2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<student>\n" +
+                "  <id>12345</id>\n" +
+                "  <name>John Smith</name>\n" +
+                "  <age>20</age>\n" +
+                "  <courses>\n" +
+                "    <course>Math</course>\n" +
+                "    <course>Science</course>\n" +
+                "    <course>History</course>\n" +
+                "  </courses>\n" +
+                "</student>";
+
+
+
+        try {
+            JSONObject result = XML.toJSONObject(new StringReader(xmlString2), new JSONPointer("/student/courses/course/"));
+//            System.out.println("Test2 for Task1:" +result);
+            if (result instanceof JSONObject) {
+                JSONObject jobj = (JSONObject) result;
+                System.out.println("Test3 for Task1:" + jobj);
+            } else {
+//                // 如果返回的不是 JSONObject，则直接打印结果
+                System.out.println("Test3 for Task1:" + result);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+//Task2
+
+        try {
+            JSONObject replacement =XML.toJSONObject("<course>Replace Course</course>\n");
+            System.out.println("Given replacement: " + replacement);
+            JSONObject jobj = XML.toJSONObject(new StringReader(xmlString2), new JSONPointer("/student/courses/course/"), replacement);
+            System.out.println("Test2 for Task3:" + jobj);
+        } catch (org.json.JSONException e) {
+            System.out.println("JSON Exception: " + e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void M2Test4() {
+        String xmlString2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<product>\n" +
+                "  <id>789</id>\n" +
+                "  <name>Smartphone</name>\n" +
+                "  <brand>ABC Inc.</brand>\n" +
+                "  <price>499.99</price>\n" +
+                "  <specifications>\n" +
+                "    <screen>6.2 inches</screen>\n" +
+                "    <camera>12 MP</camera>\n" +
+                "    <storage>64 GB</storage>\n" +
+                "  </specifications>\n" +
+                "</product>";
+
+
+
+        try {
+            JSONObject result = XML.toJSONObject(new StringReader(xmlString2), new JSONPointer("/product/specifications/"));
+//            System.out.println("Test2 for Task1:" +result);
+            if (result instanceof JSONObject) {
+                JSONObject jobj = (JSONObject) result;
+                System.out.println("Test4 for Task1:" + jobj);
+            } else {
+//                // 如果返回的不是 JSONObject，则直接打印结果
+                System.out.println("Test4 for Task1:" + result);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+//Task2
+
+        try {
+            JSONObject replacement =XML.toJSONObject("<storage>128 GB</storage>\n");
+            System.out.println("Given replacement: " + replacement);
+            JSONObject jobj = XML.toJSONObject(new StringReader(xmlString2), new JSONPointer("/product/specifications/storage/"), replacement);
+            System.out.println("Test4 for Task2:" + jobj);
+        } catch (org.json.JSONException e) {
+            System.out.println("JSON Exception: " + e.getMessage());
+        }
+    }
 }
 
 
