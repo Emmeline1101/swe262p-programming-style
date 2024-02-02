@@ -13,7 +13,7 @@
 Extract and convert data from an XML document corresponding to a specified JSONPointer path into a JSON object.
 ### Process:
 1. Initialize parsing with XMLTokener.
-2. Use parseSub to recursively traverse XML, building a JSON representation.
+2. Use parseSub to recursively traverse XML within the JSON pointer path adn skip others, building a JSON representation.
 3. When parseSub finds a path match with JSONPointer, it extracts that portion as a JSON object and returns it.
 
 
@@ -27,6 +27,15 @@ Similar to Task 1, but it additionally replaces the data at the specified JSONPo
 2. parseSub is tasked with both building the JSON object and replacing the matched path segment with the replacement JSON object.
 3. Continue parsing the document after replacement to ensure complete conversion.
 
+
+
+## Performance
+
+### Task1:
+Compare to milestone 1 task 2, task1 only needs to convert the xml within the JSON pointer path to a JSON object, without transforming the entire content.
+
+### Task2:
+Compare to milestone 1 task 5, task2 replaces the given JSON object while converting the xml.
 
 =============================================================================================
 
