@@ -34,8 +34,8 @@ Compare to milestone 1 task 2, task1 only needs to convert the xml within the JS
 
 ### Task2:
 Compare to milestone 1 task 5, task2 replaces the given JSON object while converting the XML.
-![mvn test result]([图片的URL](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2_testresult.png))
-![XML test result]([图片的URL](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2result2.png))
+![mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2_testresult.png)
+![XML test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2result2.png)
 
 =============================================================================================
 
