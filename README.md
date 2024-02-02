@@ -27,15 +27,15 @@ Similar to Task 1, but it additionally replaces the data at the specified JSONPo
 2. parseSub is tasked with both building the JSON object and replacing the matched path segment with the replacement JSON object.
 3. Continue parsing the document after replacement to ensure complete conversion.
 
-
-
 ## Performance
 
 ### Task1:
 Compare to milestone 1 task 2, task1 only needs to convert the xml within the JSON pointer path to a JSON object, without transforming the entire content.
 
 ### Task2:
-Compare to milestone 1 task 5, task2 replaces the given JSON object while converting the xml.
+Compare to milestone 1 task 5, task2 replaces the given JSON object while converting the XML.
+![mvn test result]([图片的URL](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2_testresult.png))
+![XML test result]([图片的URL](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2result2.png))
 
 =============================================================================================
 
