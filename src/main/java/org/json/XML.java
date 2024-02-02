@@ -597,7 +597,7 @@ public class XML {
      */
     public static JSONObject toJSONObject(Reader reader, XMLParserConfiguration config) throws JSONException {
         JSONObject jo = new JSONObject();
-        XMLTokener x = new XMLTokener(reader);
+        XMLTokener x = new XMLTokener(reader, config);
         while (x.more()) {
             x.skipPast("<");
             if(x.more()) {
@@ -633,6 +633,7 @@ public class XML {
         return toJSONObject(new StringReader(string), keepStrings);
     }
 
+
     /**
      * Convert a well-formed (but not necessarily valid) XML string into a
      * JSONObject. Some information may be lost in this transformation because
@@ -657,6 +658,7 @@ public class XML {
     public static JSONObject toJSONObject(String string, XMLParserConfiguration config) throws JSONException {
         return toJSONObject(new StringReader(string), config);
     }
+
 
     /**
      * Milestone 2
