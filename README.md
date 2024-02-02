@@ -5,7 +5,29 @@
 2. Install Apache Maven: Download and install Maven from the official website.
 
 3. Clone the project to your local machine
-4. run "mvn test"
+4. run "mvn clean""mvn compile""mvn test"
+
+## Task1
+
+### Purpose: 
+Extract and convert data from an XML document corresponding to a specified JSONPointer path into a JSON object.
+### Process:
+1. Initialize parsing with XMLTokener.
+2. Use parseSub to recursively traverse XML, building a JSON representation.
+3. When parseSub finds a path match with JSONPointer, it extracts that portion as a JSON object and returns it.
+
+
+
+## Task2
+
+### Purpose: 
+Similar to Task 1, but it additionally replaces the data at the specified JSONPointer path with a provided JSON object during the XML-to-JSON conversion.
+### Process: 
+1. Start with XML parsing using XMLTokener.
+2. parseSub is tasked with both building the JSON object and replacing the matched path segment with the replacement JSON object.
+3. Continue parsing the document after replacement to ensure complete conversion.
+
+
 =============================================================================================
 
 ![Json-Java logo](https://github.com/stleary/JSON-java/blob/master/images/JsonJava.png?raw=true)
