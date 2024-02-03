@@ -34,6 +34,62 @@ Compare to milestone 1 task 2, task1 only needs to convert the xml within the JS
 
 ### Task2:
 Compare to milestone 1 task 5, task2 replaces the given JSON object while converting the XML.
+
+## Test Result
+### Code for Test1
+```
+
+    @Test
+    public void M2Test1() { //for m1Task2 m2Task1
+        final String xmlString1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<Root>\n" +
+                "    <Person>\n" +
+                "        <Name>John Doe</Name>\n" +
+                "        <Age>30</Age>\n" +
+                "        <Address>\n" +
+                "            <City>New York</City>\n" +
+                "            <State>NY</State>\n" +
+                "        </Address>\n" +
+                "        <Hobbies>\n" +
+                "            <Hobby>\n" +
+                "                <Type>\n" +
+                "                    <City>New York</City>\n" +
+                "                    <State>NY</State>\n" +
+                "                </Type>\n" +
+                "            </Hobby>\n" +
+                "            <Hobby>\n" +
+                "                <Type1>Traveling</Type1>\n" +
+                "            </Hobby>\n" +
+                "        </Hobbies>\n" +
+                "    </Person>\n" +
+                "</Root>";
+        try {
+            Object result = XML.toJSONObject(new StringReader(xmlString1), new org.json.JSONPointer("/Root/Person/Hobbies/Hobby/1/Type1/"));
+            if (result instanceof org.json.JSONObject) {
+                org.json.JSONObject jobj = (org.json.JSONObject) result;
+                System.out.println("Test1 for Task1:" + jobj);
+            } else {
+                // 如果返回的不是 JSONObject，则直接打印结果
+                System.out.println("Test1 for Task1:" + result);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        //Task2
+        try {
+            org.json.JSONObject replacement = XML.toJSONObject("<City>Boston</City>\n");
+            System.out.println("Given replacement: " + replacement);
+            org.json.JSONObject jobj = XML.toJSONObject(new StringReader(xmlString1), new org.json.JSONPointer("/Root/Person/Hobbies/Hobby/1"), replacement);
+            System.out.println("Test1 for Task2:" + jobj);
+        } catch (org.json.JSONException e) {
+            System.out.println("JSON Exception: " + e.getMessage());
+        }
+
+
+        System.out.println("-----------------------");
+    }
+```
 ![mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2_testresult.png)
 ![XML test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2result2.png)
 
