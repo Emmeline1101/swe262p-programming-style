@@ -161,7 +161,6 @@ Compare to milestone 1 task 5, task2 replaces the given JSON object while conver
                 JSONObject jobj = (JSONObject) result;
                 System.out.println("Test3 for Task1:" + jobj);
             } else {
-//                // 如果返回的不是 JSONObject，则直接打印结果
                 System.out.println("Test3 for Task1:" + result);
             }
         } catch (Exception e) {
@@ -210,7 +209,6 @@ Compare to milestone 1 task 5, task2 replaces the given JSON object while conver
                 JSONObject jobj = (JSONObject) result;
                 System.out.println("Test4 for Task1:" + jobj);
             } else {
-//                // 如果返回的不是 JSONObject，则直接打印结果
                 System.out.println("Test4 for Task1:" + result);
             }
         } catch (Exception e) {
