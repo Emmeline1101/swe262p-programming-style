@@ -19,9 +19,9 @@ Convert data from XML data to JSON objects, and add the prefix to the key in the
 Compared to M1 task4, M3 directly modifies the JSON library,which reduces the calling time. Besides this, M3 adds the prefix during the process of converting XML to JSON rather than adding the prefix after the converting process
 ## Test
 ### Test Result
-![M3 mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2_testresult.png)
-![M3 XML test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2result2.png)
-### Test1
+![M3 mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/b96bb8b67df26cc1c2d7ec85e3a2c545fa88445d/images/M3%20mvn%20test.png)
+![M3 XML test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/b96bb8b67df26cc1c2d7ec85e3a2c545fa88445d/images/M3%20JUnit.png)
+### Test1 (Add Prefix)
 ```java
 @Test
     public void M3Test1() {
@@ -51,7 +51,7 @@ Compared to M1 task4, M3 directly modifies the JSON library,which reduces the ca
         }
     }
 ```
-### Test2
+### Test2 (Add Prefix)
 ```java
 public void M3Test2() {
         // xml string
@@ -87,7 +87,7 @@ public void M3Test2() {
         }
     }
 ```
-### Test3
+### Test3 (Reverse)
 ```java
 public void M3Test3() {
         // xml string
@@ -118,7 +118,7 @@ public void M3Test3() {
     }
 
 ```
-### Test4
+### Test4 (Reverse)
 ```java
 @Test
     public void M3Test4() {
