@@ -20,6 +20,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.json.*;
 import org.junit.Rule;
@@ -1440,7 +1441,6 @@ public class XMLTest {
                 org.json.JSONObject jobj = (org.json.JSONObject) result;
                 System.out.println("Test1 for Task1:" + jobj);
             } else {
-                // 如果返回的不是 JSONObject，则直接打印结果
                 System.out.println("Test1 for Task1:" + result);
             }
         } catch (Exception e) {
@@ -1480,7 +1480,6 @@ public class XMLTest {
                 JSONObject jobj = (JSONObject) result;
                 System.out.println("Test2 for Task1:" + jobj);
             } else {
-//                // 如果返回的不是 JSONObject，则直接打印结果
                 System.out.println("Test2 for Task1:" + result);
             }
         } catch (Exception e) {
@@ -1522,7 +1521,6 @@ public class XMLTest {
                 JSONObject jobj = (JSONObject) result;
                 System.out.println("Test3 for Task1:" + jobj);
             } else {
-//                // 如果返回的不是 JSONObject，则直接打印结果
                 System.out.println("Test3 for Task1:" + result);
             }
         } catch (Exception e) {
@@ -1566,7 +1564,6 @@ public class XMLTest {
                 JSONObject jobj = (JSONObject) result;
                 System.out.println("Test4 for Task1:" + jobj);
             } else {
-//                // 如果返回的不是 JSONObject，则直接打印结果
                 System.out.println("Test4 for Task1:" + result);
             }
         } catch (Exception e) {
@@ -1584,6 +1581,127 @@ public class XMLTest {
             System.out.println("JSON Exception: " + e.getMessage());
         }
         System.out.println("-----------------------");
+    }
+
+    @Test
+    public void M3Test1() {
+        // xml string
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<product>\n" +
+                "  <id>789</id>\n" +
+                "  <name>Smartphone</name>\n" +
+                "  <brand>ABC Inc.</brand>\n" +
+                "  <price>499.99</price>\n" +
+                "  <specifications>\n" +
+                "    <screen>6.2 inches</screen>\n" +
+                "    <camera>12 MP</camera>\n" +
+                "    <storage>64 GB</storage>\n" +
+                "  </specifications>\n" +
+                "</product>\n";
+        // create a reader
+        StringReader reader = new StringReader(xmlString);
+        //define a keyTransformer
+        Function<String, String> keyTransformer = key -> "swe262_" + key;
+        //call the method
+        try {
+            JSONObject json = XML.toJSONObject(reader, keyTransformer);
+            System.out.println("Test1 for M3" + json.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void M3Test2() {
+        // xml string
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<order id=\"12345\" date=\"2024-02-13\">\n" +
+                "  <customer>\n" +
+                "    <firstName>John</firstName>\n" +
+                "    <lastName>Doe</lastName>\n" +
+                "  </customer>\n" +
+                "  <items>\n" +
+                "    <item id=\"1\">\n" +
+                "      <name>Laptop</name>\n" +
+                "      <quantity>1</quantity>\n" +
+                "      <price>1200.00</price>\n" +
+                "    </item>\n" +
+                "    <item id=\"2\">\n" +
+                "      <name>Mouse</name>\n" +
+                "      <quantity>2</quantity>\n" +
+                "      <price>25.00</price>\n" +
+                "    </item>\n" +
+                "  </items>\n" +
+                "</order>\n";
+        // create a reader
+        StringReader reader = new StringReader(xmlString);
+        //define a keyTransformer
+        Function<String, String> keyTransformer = key -> "swe262_" + key;
+        //call the method
+        try {
+            JSONObject json = XML.toJSONObject(reader, keyTransformer);
+            System.out.println("Test2 for M3" + json.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void M3Test3() {
+        // xml string
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<bookstore xmlns:bk=\"http://www.example.com/books\">\n" +
+                "  <book id=\"book1\">\n" +
+                "    <bk:title>The Great Gatsby</bk:title>\n" +
+                "    <bk:author>F. Scott Fitzgerald</bk:author>\n" +
+                "    <bk:year>1925</bk:year>\n" +
+                "  </book>\n" +
+                "  <book id=\"book2\">\n" +
+                "    <bk:title>To Kill a Mockingbird</bk:title>\n" +
+                "    <bk:author>Harper Lee</bk:author>\n" +
+                "    <bk:year>1960</bk:year>\n" +
+                "  </book>\n" +
+                "</bookstore>\n";
+        // create a reader
+        StringReader reader = new StringReader(xmlString);
+        //define a keyTransformer
+        Function<String, String> keyTransformer = key -> new StringBuilder(key).reverse().toString();;
+        //call the method
+        try {
+            JSONObject json = XML.toJSONObject(reader, keyTransformer);
+            System.out.println("Test3 for M3" + json.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void M3Test4() {
+        // xml string
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<survey>\n" +
+                "  <question type=\"multiple-choice\">\n" +
+                "    <text>What is your favorite color?</text>\n" +
+                "    <options>\n" +
+                "      <option>Red</option>\n" +
+                "      <option>Green</option>\n" +
+                "      <option>Blue</option>\n" +
+                "      <option>Yellow</option>\n" +
+                "    </options>\n" +
+                "  </question>\n" +
+                "  <question type=\"text\">\n" +
+                "    <text>Please describe your ideal vacation destination.</text>\n" +
+                "  </question>\n" +
+                "</survey>\n";
+        // create a reader
+        StringReader reader = new StringReader(xmlString);
+        //define a keyTransformer
+        Function<String, String> keyTransformer = key -> new StringBuilder(key).reverse().toString();;
+        //call the method
+        try {
+            JSONObject json = XML.toJSONObject(reader, keyTransformer);
+            System.out.println("Test4 for M3" + json.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
 
