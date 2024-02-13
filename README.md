@@ -6,6 +6,153 @@
 
 3. Clone the project to your local machine
 4. run "mvn clean""mvn compile""mvn test"
+   
+# M3
+## Purpose: 
+Convert data from XML data to JSON objects, and add the prefix to the key in the process of converting by using the 'Function<String, String> keyTransformer' interface.
+## Process:
+1. Initialize parsing with XMLTokener.
+2. Use parse to recursively traverse XML, and when finding the key of the XML object, add the prefix to it.
+3. Convert XML to JSON.
+
+## Performance
+Compared to M1 task4, M3 directly modifies the JSON library,which reduces the calling time. Besides this, M3 adds the prefix during the process of converting XML to JSON rather than adding the prefix after the converting process
+## Test
+### Test Result
+![M3 mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2_testresult.png)
+![M3 XML test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2result2.png)
+### Test1
+```java
+@Test
+    public void M3Test1() {
+        // xml string
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<product>\n" +
+                "  <id>789</id>\n" +
+                "  <name>Smartphone</name>\n" +
+                "  <brand>ABC Inc.</brand>\n" +
+                "  <price>499.99</price>\n" +
+                "  <specifications>\n" +
+                "    <screen>6.2 inches</screen>\n" +
+                "    <camera>12 MP</camera>\n" +
+                "    <storage>64 GB</storage>\n" +
+                "  </specifications>\n" +
+                "</product>\n";
+        // create a reader
+        StringReader reader = new StringReader(xmlString);
+        //define a keyTransformer
+        Function<String, String> keyTransformer = key -> "swe262_" + key;
+        //call the method
+        try {
+            JSONObject json = XML.toJSONObject(reader, keyTransformer);
+            System.out.println("Test1 for M3" + json.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+```
+### Test2
+```java
+public void M3Test2() {
+        // xml string
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<order id=\"12345\" date=\"2024-02-13\">\n" +
+                "  <customer>\n" +
+                "    <firstName>John</firstName>\n" +
+                "    <lastName>Doe</lastName>\n" +
+                "  </customer>\n" +
+                "  <items>\n" +
+                "    <item id=\"1\">\n" +
+                "      <name>Laptop</name>\n" +
+                "      <quantity>1</quantity>\n" +
+                "      <price>1200.00</price>\n" +
+                "    </item>\n" +
+                "    <item id=\"2\">\n" +
+                "      <name>Mouse</name>\n" +
+                "      <quantity>2</quantity>\n" +
+                "      <price>25.00</price>\n" +
+                "    </item>\n" +
+                "  </items>\n" +
+                "</order>\n";
+        // create a reader
+        StringReader reader = new StringReader(xmlString);
+        //define a keyTransformer
+        Function<String, String> keyTransformer = key -> "swe262_" + key;
+        //call the method
+        try {
+            JSONObject json = XML.toJSONObject(reader, keyTransformer);
+            System.out.println("Test2 for M3" + json.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+```
+### Test3
+```java
+public void M3Test3() {
+        // xml string
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<bookstore xmlns:bk=\"http://www.example.com/books\">\n" +
+                "  <book id=\"book1\">\n" +
+                "    <bk:title>The Great Gatsby</bk:title>\n" +
+                "    <bk:author>F. Scott Fitzgerald</bk:author>\n" +
+                "    <bk:year>1925</bk:year>\n" +
+                "  </book>\n" +
+                "  <book id=\"book2\">\n" +
+                "    <bk:title>To Kill a Mockingbird</bk:title>\n" +
+                "    <bk:author>Harper Lee</bk:author>\n" +
+                "    <bk:year>1960</bk:year>\n" +
+                "  </book>\n" +
+                "</bookstore>\n";
+        // create a reader
+        StringReader reader = new StringReader(xmlString);
+        //define a keyTransformer
+        Function<String, String> keyTransformer = key -> new StringBuilder(key).reverse().toString();;
+        //call the method
+        try {
+            JSONObject json = XML.toJSONObject(reader, keyTransformer);
+            System.out.println("Test3 for M3" + json.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+```
+### Test4
+```java
+@Test
+    public void M3Test4() {
+        // xml string
+        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<survey>\n" +
+                "  <question type=\"multiple-choice\">\n" +
+                "    <text>What is your favorite color?</text>\n" +
+                "    <options>\n" +
+                "      <option>Red</option>\n" +
+                "      <option>Green</option>\n" +
+                "      <option>Blue</option>\n" +
+                "      <option>Yellow</option>\n" +
+                "    </options>\n" +
+                "  </question>\n" +
+                "  <question type=\"text\">\n" +
+                "    <text>Please describe your ideal vacation destination.</text>\n" +
+                "  </question>\n" +
+                "</survey>\n";
+        // create a reader
+        StringReader reader = new StringReader(xmlString);
+        //define a keyTransformer
+        Function<String, String> keyTransformer = key -> new StringBuilder(key).reverse().toString();;
+        //call the method
+        try {
+            JSONObject json = XML.toJSONObject(reader, keyTransformer);
+            System.out.println("Test4 for M3" + json.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+```
+
+# M2
 
 ## Task1
 
@@ -37,8 +184,8 @@ Compare to milestone 1 task 5, task2 replaces the given JSON object while conver
 
 ## Test Result
 
-![mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2_testresult.png)
-![XML test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2result2.png)
+![M2 mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2_testresult.png)
+![M2 XML test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/master/images/m2result2.png)
 
 ### Code for Test1
 ```
