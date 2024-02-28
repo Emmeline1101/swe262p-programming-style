@@ -6,7 +6,46 @@
 
 3. Clone the project to your local machine
 4. run "mvn clean""mvn compile""mvn test"
-   
+
+# M4
+
+## Purpose:
+Create a method to convert JSON objects to streams.
+## Process:
+1. Create the MySpliterator class as an implementation for Spliterator<JSONObject> interface.
+2. Implement tryAdvance method to iterate over keys and values, creating new JSON object and handling nested objects and arrays
+3. Implement toStream() method to convert the JSON object into a Stream of JSON objects. The spliterator() method plays a key role in this process by providing a customized MySpliterator for the current JSON object, making the conversion into a Stream of JSONObjects possible.
+
+### Test1
+```java
+@Test
+    public void testStreamExtractTitles() {
+        JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
+        List<String> titles = obj.toStream()
+                .filter(node -> node.has("title"))
+                .map(node -> node.getString("title"))
+                .collect(Collectors.toList());
+        assertTrue(titles.containsAll(Arrays.asList("AAA", "BBB")));
+    }
+```
+
+### Test2
+```java
+ @Test
+    public void testStreamFilterAndTransform() {
+        JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><price>10</price></book><book><title>BBB</title><price>15</price></book></Books>");
+        List<String> discountedPrices = obj.toStream()
+                .filter(node -> node.has("price"))
+                .map(node -> {
+                    double price = node.getDouble("price");
+                    double discountPrice = price * 0.9; 
+                    return String.format("%.2f", discountPrice);
+                })
+                .collect(Collectors.toList());
+        assertEquals(Arrays.asList("9.00", "13.50"), discountedPrices);
+    }
+```
+
 # M3
 ## Purpose: 
 Convert data from XML data to JSON objects, and add the prefix to the key in the process of converting by using the 'Function<String, String> keyTransformer' interface.
