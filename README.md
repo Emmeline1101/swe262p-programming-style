@@ -17,7 +17,7 @@ Create a method to convert JSON objects to streams. And the streams can be utili
 3. Implement `toJSONObjectStream` method to convert the JSON object into a Stream of JSON objects. The `spliterator()` method plays a key role in this process by providing a customized `JSONSpliterator` for the current JSON object, making the conversion into a Stream of JSONObjects possible.
 ## Test
 ### Test Result
-![M4 mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/b96bb8b67df26cc1c2d7ec85e3a2c545fa88445d/images/M3%20mvn%20test.png)
+![M4 mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/0692aed5827b19d84ed284fcc988c56c2b9342cf/images/M4Test.png)
 ### Test1
 ```java
     @Test
