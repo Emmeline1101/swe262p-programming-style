@@ -11,7 +11,10 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.json.NumberConversionUtil.potentialNumber;
 import static org.json.NumberConversionUtil.stringToNumber;
@@ -547,6 +550,30 @@ public class XML {
     public static JSONObject toJSONObject(Reader reader) throws JSONException {
         return toJSONObject(reader, XMLParserConfiguration.ORIGINAL);
     }
+
+    /**
+     * Milestone 5
+     */
+public static CompletableFuture<JSONObject> toJSONObject(Reader reader,Consumer<JSONObject> onSuccess, Consumer<Exception> onFailure) {
+
+    Supplier<JSONObject> supplier = () -> {
+        JSONObject jsonObject = new JSONObject();
+        try {
+
+            jsonObject = XML.toJSONObject(reader);
+            onSuccess.accept(jsonObject);
+            System.out.println(">> Finished converting XML to JSON!\n");
+        }catch (Exception e) {
+            jsonObject = null;
+            onFailure.accept(e);
+        }
+        return jsonObject;
+    };
+    CompletableFuture<JSONObject> result = CompletableFuture.supplyAsync(supplier);
+    return result;
+
+}
+
 
     /**
      * Convert a well-formed (but not necessarily valid) XML into a
