@@ -15,18 +15,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static org.json.NumberConversionUtil.potentialNumber;
 import static org.json.NumberConversionUtil.stringToNumber;
@@ -2884,5 +2878,85 @@ public class JSONObject {
         );
     }
 
+    /*
+    MileStone4
+     */
+    class JSONSpliterator implements Spliterator<JSONObject> {
+
+        private JSONObject jsonObject;
+
+        // Constructor initializes with a given JSONObject
+        public JSONSpliterator(JSONObject jsonObject){
+            this.jsonObject = jsonObject;
+        }
+
+        @Override
+        public int characteristics() {
+            // Indicate characteristics of this spliterator
+            return Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL;
+        }
+
+        @Override
+        public long estimateSize() {
+            // The exact size is unknown
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public boolean tryAdvance(Consumer<? super JSONObject> consumer) {
+
+            JSONObject currentObj = jsonObject; // Current object for processing
+            Iterator<String> keyIterator = currentObj.keys(); // Iterator over keys
+
+            while(keyIterator.hasNext()) {
+                String currentKey = keyIterator.next();
+
+                // Handle different types of values
+                if(currentObj.get(currentKey) instanceof String) {
+                    JSONObject temporary = new JSONObject();
+                    temporary.put(currentKey, currentObj.get(currentKey));
+                    consumer.accept(temporary);
+                }
+                else if(currentObj.get(currentKey) instanceof JSONObject) {
+                    JSONObject temporary = new JSONObject();
+                    temporary.put(currentKey, currentObj.get(currentKey));
+                    consumer.accept(temporary);
+                    jsonObject = (JSONObject) currentObj.get(currentKey);
+                    tryAdvance(consumer); // Recursive call for nested objects
+                }
+                else if(currentObj.get(currentKey) instanceof JSONArray) {
+                    consumer.accept(currentObj);
+                    JSONArray array = currentObj.getJSONArray(currentKey);
+
+                    for(int i = 0; i < array.length(); i++) {
+                        jsonObject = array.getJSONObject(i);
+                        tryAdvance(consumer); // Process each object within the array
+                    }
+                } else {
+                    // Handling other types of objects
+                    JSONObject temporary = new JSONObject();
+                    temporary.put(currentKey, currentObj.get(currentKey));
+                    consumer.accept(temporary);
+                }
+            }
+            return false; // Indicate no more elements are present
+        }
+
+        @Override
+        public Spliterator<JSONObject> trySplit() {
+            return null;
+        }
+
+    }
+
+    // Method to convert JSONObject to Stream for processing
+    public Stream<JSONObject> toJSONObjectStream() {
+        return StreamSupport.stream(new JSONSpliterator(this), false);
+    }
+
+    // Provide a spliterator for the current JSONObject
+    public Spliterator<JSONObject> spliterator() {
+        return new JSONSpliterator(this);
+    }
 
 }

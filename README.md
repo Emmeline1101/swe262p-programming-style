@@ -6,7 +6,65 @@
 
 3. Clone the project to your local machine
 4. run "mvn clean""mvn compile""mvn test"
-   
+
+# M4
+
+## Purpose:
+Create a method to convert JSON objects to streams. And the streams can be utilized to process the data.
+## Process:
+1. Create the `JSONSpliterator` class as an implementation of the `Spliterator<JSONObject>` interface.
+2. Implement `tryAdvance` method to iterate over keys and values, creating new JSON object and handling nested objects and arrays
+3. Implement `toJSONObjectStream` method to convert the JSON object into a Stream of JSON objects. The `spliterator()` method plays a key role in this process by providing a customized `JSONSpliterator` for the current JSON object, making the conversion into a Stream of JSONObjects possible.
+## Test
+### Test Result
+![M4 mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/0692aed5827b19d84ed284fcc988c56c2b9342cf/images/M4Test.png)
+### Test1
+```java
+    @Test
+    public void testStreamExtractTitles() { // extract all the String value of the "title"
+        JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
+        List<String> titles = obj.toJSONObjectStream()
+                .filter(node -> node.has("title")) //filter the node
+                .map(node -> node.getString("title"))// get the key/value of the title
+                .collect(Collectors.toList()); //collect them in the list
+        assertTrue(titles.containsAll(Arrays.asList("AAA", "BBB")));
+    }
+```
+
+### Test2
+```java
+ @Test
+    @Test
+    public void testStreamFilterAndTransform() {//filter & proccess with the price
+        JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><price>10</price></book><book><title>BBB</title><price>15</price></book></Books>");
+        List<String> discountedPrices = obj.toJSONObjectStream()
+                .filter(node -> node.has("price"))
+                .map(node -> {
+                    double price = node.getDouble("price");
+                    double discountPrice = price * 0.9; // discount
+                    return String.format("%.2f", discountPrice);
+                })
+                .collect(Collectors.toList());
+        assertEquals(Arrays.asList("9.00", "13.50"), discountedPrices); // expectation
+    }
+```
+
+### Test3
+```java
+    @Test
+    public void testStreamTransformBasedOnPath() { //filter title
+        JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
+        List<String> transformedTitles = obj.toJSONObjectStream()
+                .filter(node -> node.has("title"))
+                .map(node -> {
+                    String title = node.getString("title");
+                    return title.toUpperCase();
+                })
+                .collect(Collectors.toList());
+        assertTrue(transformedTitles.containsAll(Arrays.asList("AAA", "BBB")));
+    }
+```
+
 # M3
 ## Purpose: 
 Convert data from XML data to JSON objects, and add the prefix to the key in the process of converting by using the 'Function<String, String> keyTransformer' interface.

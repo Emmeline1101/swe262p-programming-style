@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.json.CDL;
 import org.json.JSONArray;
@@ -2143,7 +2144,7 @@ public class JSONObjectTest {
         // confirm result, just in case
         Object doc = Configuration.defaultConfiguration().jsonProvider().parse(str);
         assertTrue("expected 1 top level item", ((Map<?,?>)(JsonPath.read(doc, "$"))).size() == 1);
-        assertTrue("expected myValue", "myValue".equals(JsonPath.read(doc, "$.1")));
+        assertTrue("expected myValue", "myValue".equals(JsonPath.read(doc, "$['1']")));
     }
 
     /**
@@ -3816,5 +3817,48 @@ public class JSONObjectTest {
         nestedMap.put("t", buildNestedMap(maxDepth - 1));
         return nestedMap;
     }
+
+    /***
+     * MileStone4
+     */
+
+    @Test
+    public void testStreamExtractTitles() { // extract all the String value of the "title"
+        JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
+        List<String> titles = obj.toJSONObjectStream()
+                .filter(node -> node.has("title")) //filter the node
+                .map(node -> node.getString("title"))// get the key/value of the title
+                .collect(Collectors.toList()); //collect them in the list
+        assertTrue(titles.containsAll(Arrays.asList("AAA", "BBB")));
+    }
+
+    @Test
+    public void testStreamFilterAndTransform() {//filter & proccess with the price
+        JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><price>10</price></book><book><title>BBB</title><price>15</price></book></Books>");
+        List<String> discountedPrices = obj.toJSONObjectStream()
+                .filter(node -> node.has("price"))
+                .map(node -> {
+                    double price = node.getDouble("price");
+                    double discountPrice = price * 0.9; // discount
+                    return String.format("%.2f", discountPrice);
+                })
+                .collect(Collectors.toList());
+        assertEquals(Arrays.asList("9.00", "13.50"), discountedPrices); // expectation
+    }
+
+    @Test
+    public void testStreamTransformBasedOnPath() { //filter title
+        JSONObject obj = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
+        List<String> transformedTitles = obj.toJSONObjectStream()
+                .filter(node -> node.has("title"))
+                .map(node -> {
+                    String title = node.getString("title");
+                    return title.toUpperCase();
+                })
+                .collect(Collectors.toList());
+        assertTrue(transformedTitles.containsAll(Arrays.asList("AAA", "BBB")));
+    }
+
+
 
 }
