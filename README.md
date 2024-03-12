@@ -11,7 +11,13 @@
 ## Purpose:
 The test checks if converting XML to JSON asynchronously works correctly. It ensures the output matches expected results when given specific XML input.
 ## Process:
-The process involves preparing XML strings, setting up success and failure callbacks, and calling a custom method to convert XML to JSON asynchronously. The test waits for the operation to complete and then checks if the conversion outcome is as expected.
+- **XML Input Preparation**: We start with two XML strings, `inputXML` and `expectedXML`, to represent the data to convert and what we expect after conversion.
+
+- **Callback Functions**: We set up `onSuccess` and `onFailure` callbacks to handle the conversion outcome or any errors.
+
+- **Asynchronous Conversion**: We use the `toJSONObject` method with a `StringReader` for `inputXML` and callbacks, getting back a `CompletableFuture<JSONObject>` for later results.
+
+- **Result Checking**: After conversion completes, we compare the expected JSON with the actual one to verify the process worked correctly.
 ## Performance: 
 Using asynchronous programming makes the conversion process more efficient, allowing other tasks to run simultaneously. This method improves the application's overall responsiveness and capacity to handle operations without blocking.
 ## Test：
