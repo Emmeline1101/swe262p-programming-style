@@ -3,12 +3,6 @@ package org.json.junit;
 Public Domain.
 */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -18,6 +12,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -26,6 +22,8 @@ import org.json.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import static org.junit.Assert.*;
 
 
 /**
@@ -1703,6 +1701,58 @@ public class XMLTest {
             e.printStackTrace();
         }
     }
+
+    //MileStone5
+    @Test
+    public void shouldReturnAsyncObject() {
+
+        // Input XML string
+        String inputXML = "<?xml version=\"1.0\"?>\n" +
+                "<library>\n" +
+                "    <book id=\"bk001\">\n" +
+                "        <author>Smith, John</author>\n" +
+                "        <title>Java Fundamentals</title>\n" +
+                "    </book>\n" +
+                "    <book id=\"bk002\">\n" +
+                "        <author>Doe, Jane</author>\n" +
+                "        <title>Understanding Algorithms</title>\n" +
+                "    </book>\n" +
+                "</library>";
+
+        // Expected XML string to match against the result
+        String expectedXML = "<?xml version=\"1.0\"?>\n" +
+                "<library>\n" +
+                "    <book id=\"bk001\">\n" +
+                "        <author>Smith, John</author>\n" +
+                "        <title>Java Fundamentals</title>\n" +
+                "    </book>\n" +
+                "    <book id=\"bk002\">\n" +
+                "        <author>Doe, Jane</author>\n" +
+                "        <title>Understanding Algorithms</title>\n" +
+                "    </book>\n" +
+                "</library>";
+
+        // Prepare success and failure callback functions
+        Consumer<JSONObject> onSuccess = (json) -> System.out.println("Success: " + json.toString());
+        Consumer<Exception> onFailure = Throwable::printStackTrace;
+
+        // Call the asynchronous toJSONObject method
+        CompletableFuture<JSONObject> asyncResult = XML.toJSONObject(new StringReader(inputXML), onSuccess, onFailure);
+        JSONObject expectedJSONObject = XML.toJSONObject(expectedXML);
+
+        JSONObject actualJSONObject = null;
+        try {
+            // Wait for the asynchronous processing result
+            actualJSONObject = asyncResult.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Assert that the actual JSON object is not null and equals the expected JSON object
+        assertNotNull(actualJSONObject);
+        assertEquals(expectedJSONObject.toString(), actualJSONObject.toString());
+    }
+
 }
 
 
