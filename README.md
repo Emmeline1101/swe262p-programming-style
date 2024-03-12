@@ -7,6 +7,68 @@
 3. Clone the project to your local machine
 4. run "mvn clean""mvn compile""mvn test"
 
+# M5
+## Purpose:
+The test checks if converting XML to JSON asynchronously works correctly. It ensures the output matches expected results when given specific XML input.
+## Process:
+The process involves preparing XML strings, setting up success and failure callbacks, and calling a custom method to convert XML to JSON asynchronously. The test waits for the operation to complete and then checks if the conversion outcome is as expected.
+## Performance: 
+Using asynchronous programming makes the conversion process more efficient, allowing other tasks to run simultaneously. This method improves the application's overall responsiveness and capacity to handle operations without blocking.
+## Test：
+``` java
+ @Test
+    public void shouldReturnAsyncObject() {
+
+        // Input XML string
+        String inputXML = "<?xml version=\"1.0\"?>\n" +
+                "<library>\n" +
+                "    <book id=\"bk001\">\n" +
+                "        <author>Smith, John</author>\n" +
+                "        <title>Java Fundamentals</title>\n" +
+                "    </book>\n" +
+                "    <book id=\"bk002\">\n" +
+                "        <author>Doe, Jane</author>\n" +
+                "        <title>Understanding Algorithms</title>\n" +
+                "    </book>\n" +
+                "</library>";
+
+        // Expected XML string to match against the result
+        String expectedXML = "<?xml version=\"1.0\"?>\n" +
+                "<library>\n" +
+                "    <book id=\"bk001\">\n" +
+                "        <author>Smith, John</author>\n" +
+                "        <title>Java Fundamentals</title>\n" +
+                "    </book>\n" +
+                "    <book id=\"bk002\">\n" +
+                "        <author>Doe, Jane</author>\n" +
+                "        <title>Understanding Algorithms</title>\n" +
+                "    </book>\n" +
+                "</library>";
+
+        // Prepare success and failure callback functions
+        Consumer<JSONObject> onSuccess = (json) -> System.out.println("Success: " + json.toString());
+        Consumer<Exception> onFailure = Throwable::printStackTrace;
+
+        // Call the asynchronous toJSONObject method
+        CompletableFuture<JSONObject> asyncResult = XML.toJSONObject(new StringReader(inputXML), onSuccess, onFailure);
+        JSONObject expectedJSONObject = XML.toJSONObject(expectedXML);
+
+        JSONObject actualJSONObject = null;
+        try {
+            // Wait for the asynchronous processing result
+            actualJSONObject = asyncResult.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Assert that the actual JSON object is not null and equals the expected JSON object
+        assertNotNull(actualJSONObject);
+        assertEquals(expectedJSONObject.toString(), actualJSONObject.toString());
+    }
+
+```
+### Test Result
+![M5 mvn test result](https://github.com/Emmeline1101/swe262p-programming-style/blob/0692aed5827b19d84ed284fcc988c56c2b9342cf/images/M4Test.png)
 # M4
 
 ## Purpose:
